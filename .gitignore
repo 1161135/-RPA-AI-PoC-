@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.superpowers/
+.codex-doc-review/
+*.tsbuildinfo
