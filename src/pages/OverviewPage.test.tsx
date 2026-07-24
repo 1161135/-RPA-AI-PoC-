@@ -18,6 +18,7 @@ describe('OverviewPage', () => {
     expect(screen.getByText('自动化运行摘要')).toBeInTheDocument();
     expect(screen.getByText('GMV 渠道趋势')).toBeInTheDocument();
     expect(screen.getByText('渠道贡献')).toBeInTheDocument();
+    expect(screen.getAllByText(/较上一可比周期/).length).toBeGreaterThan(0);
   });
 
   it('derives the automation summary from visible channel tasks', () => {

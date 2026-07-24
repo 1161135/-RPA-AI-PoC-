@@ -9,6 +9,7 @@ import { IntegrationPage } from './pages/IntegrationPage';
 import { useCockpitContext } from './hooks/useCockpitData';
 import { sourceRows } from './data/mock-data';
 import { downloadCsv, generatePowerBiCsv } from './services/export';
+import './styles/polish.css';
 
 function CockpitPages() {
   const { filters } = useCockpitContext();

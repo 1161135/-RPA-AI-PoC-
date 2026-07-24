@@ -1,0 +1,18 @@
+.table-panel .numeric-cell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-card ol {
+  margin: 12px 0 0;
+  padding-left: 22px;
+}
+
+.report-card li + li {
+  margin-top: 9px;
+}
+
+.report-card li::marker {
+  color: #3579e6;
+  font-weight: 800;
+}

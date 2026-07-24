@@ -9,5 +9,6 @@ describe('DailyReportPage', () => {
     expect(screen.getByRole('heading', { name: '每日经营日报' })).toBeInTheDocument();
     expect(screen.getByText('昨天发生什么')).toBeInTheDocument();
     expect(screen.getByText('今天建议做什么')).toBeInTheDocument();
+    expect(screen.getByTestId('recommended-actions').querySelectorAll('li')).toHaveLength(3);
   });
 });

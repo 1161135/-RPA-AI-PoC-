@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calculateMetrics, calculateSavedHours } from './metrics';
+import { calculateMetrics, calculatePeriodChange, calculateSavedHours } from './metrics';
 
 describe('calculateMetrics', () => {
   it('calculates GMV only from paid orders and reports refunds separately', () => {
@@ -26,5 +26,10 @@ describe('calculateMetrics', () => {
 
   it('calculates simulated saved hours from successful runs and manual minutes', () => {
     expect(calculateSavedHours(16, 15)).toBe(4);
+  });
+
+  it('calculates a comparable period change without dividing by zero', () => {
+    expect(calculatePeriodChange(126, 120)).toBeCloseTo(0.05);
+    expect(calculatePeriodChange(10, 0)).toBeNull();
   });
 });

@@ -33,6 +33,7 @@ export type CockpitData = {
   channelMetrics: ChannelMetric[];
   trend: TrendPoint[];
   skuMetrics: SkuMetric[];
+  previousMetrics?: ReturnType<typeof calculateMetrics>;
 };
 
 const ALL_CHANNELS: ChannelId[] = ['tmall', 'jd', 'douyin'];
@@ -81,6 +82,7 @@ function aggregateRows(rows: SourceRow[]) {
 export function useCockpitData(): CockpitData {
   const { filters } = useCockpitContext();
   return useMemo(() => {
+    const allDates = [...new Set(sourceRows.map((row) => row.date))].sort();
     const selectedDates = datesForPeriod(sourceRows, filters);
     const filteredRows = sourceRows.filter((row) => selectedDates.has(row.date) && filters.channels.includes(row.channel));
     const channelMetrics = ALL_CHANNELS
@@ -98,7 +100,20 @@ export function useCockpitData(): CockpitData {
       const latest = rows[rows.length - 1];
       return { sku, ...aggregateRows(rows), stock: latest?.stock ?? 0, averageDailySales: latest?.averageDailySales ?? 0, channel: latest?.channel ?? 'tmall', demoDate: latest?.date ?? '' };
     });
-    return { filteredRows, metrics: aggregateRows(filteredRows), channelMetrics, trend, skuMetrics };
+    const selectedDateList = [...selectedDates].sort();
+    const firstSelectedIndex = allDates.indexOf(selectedDateList[0]);
+    const previousDates = firstSelectedIndex > 0
+      ? new Set(allDates.slice(Math.max(0, firstSelectedIndex - selectedDateList.length), firstSelectedIndex))
+      : new Set<string>();
+    const previousRows = sourceRows.filter((row) => previousDates.has(row.date) && filters.channels.includes(row.channel));
+    return {
+      filteredRows,
+      metrics: aggregateRows(filteredRows),
+      previousMetrics: previousRows.length ? aggregateRows(previousRows) : undefined,
+      channelMetrics,
+      trend,
+      skuMetrics,
+    };
   }, [filters]);
 }
 

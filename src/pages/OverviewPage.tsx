@@ -2,22 +2,34 @@ import { ChannelContribution } from '../components/ChannelContribution';
 import { KpiCard } from '../components/KpiCard';
 import { TrendChart } from '../components/TrendChart';
 import { useAutomationTasks, useCockpitData } from '../hooks/useCockpitData';
-import { calculateSavedHours } from '../services/metrics';
+import { calculatePeriodChange, calculateSavedHours } from '../services/metrics';
 
 const currency = (value: number) => `¥${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+const comparableDelta = (current: number, previous?: number) => {
+  const change = previous === undefined ? null : calculatePeriodChange(current, previous);
+  if (change === null) return { text: '暂无可比周期', tone: 'neutral' as const };
+  const arrow = change > 0 ? '↑' : change < 0 ? '↓' : '→';
+  return { text: `较上一可比周期 ${arrow}${Math.abs(change * 100).toFixed(1)}%`, tone: change >= 0 ? 'positive' as const : 'negative' as const };
+};
 export function OverviewPage() {
-  const { metrics, channelMetrics, trend } = useCockpitData();
+  const { metrics, previousMetrics, channelMetrics, trend } = useCockpitData();
   const tasks = useAutomationTasks();
   const successfulRuns = tasks.reduce((sum, task) => sum + task.successfulRuns, 0);
   const savedHours = tasks.reduce((sum, task) => sum + calculateSavedHours(task.successfulRuns, task.manualMinutes), 0);
   const failedTasks = tasks.filter((task) => task.status === 'failed').length;
+  const deltas = {
+    gmv: comparableDelta(metrics.gmv, previousMetrics?.gmv),
+    paidOrders: comparableDelta(metrics.paidOrders, previousMetrics?.paidOrders),
+    conversionRate: comparableDelta(metrics.conversionRate, previousMetrics?.conversionRate),
+    aov: comparableDelta(metrics.aov, previousMetrics?.aov),
+  };
   return <section id="overview">
     <div className="page-heading"><div><p className="eyebrow">经营数据 · 模拟脱敏演示</p><h2>经营总览</h2><p>先看经营结果，再处理需要行动的异常。</p></div><span className="data-pill">数据更新于 <b>08:30</b> · 模拟数据</span></div>
     <div className="kpi-grid" aria-label="经营核心指标">
-      <KpiCard label="GMV" value={currency(metrics.gmv)} caption="已支付订单金额" />
-      <KpiCard label="支付订单" value={metrics.paidOrders.toLocaleString()} caption="退款单独统计" />
-      <KpiCard label="支付转化率" value={`${(metrics.conversionRate * 100).toFixed(2)}%`} caption="支付订单 / 访问量" />
-      <KpiCard label="客单价" value={currency(metrics.aov)} caption="GMV / 支付订单" />
+      <KpiCard label="GMV" value={currency(metrics.gmv)} delta={deltas.gmv.text} tone={deltas.gmv.tone} caption="已支付订单金额" />
+      <KpiCard label="支付订单" value={metrics.paidOrders.toLocaleString()} delta={deltas.paidOrders.text} tone={deltas.paidOrders.tone} caption="退款单独统计" />
+      <KpiCard label="支付转化率" value={`${(metrics.conversionRate * 100).toFixed(2)}%`} delta={deltas.conversionRate.text} tone={deltas.conversionRate.tone} caption="支付订单 / 访问量" />
+      <KpiCard label="客单价" value={currency(metrics.aov)} delta={deltas.aov.text} tone={deltas.aov.tone} caption="GMV / 支付订单" />
     </div>
     <div className="dashboard-grid">
       <article className="panel"><div className="panel-header"><div><h3>GMV 渠道趋势</h3><p>单位：元 · 横轴：日期</p></div></div><TrendChart data={trend} /></article>

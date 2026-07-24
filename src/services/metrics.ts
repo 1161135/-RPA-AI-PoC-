@@ -24,3 +24,7 @@ export const calculateMetrics = (rows: MetricRow[]) => {
 /** Simulated ROI: successful runs multiplied by the standard manual time per run. */
 export const calculateSavedHours = (successfulRuns: number, manualMinutes: number) =>
   (successfulRuns * manualMinutes) / 60;
+
+/** Returns the relative change against a comparable prior period, or null when no baseline exists. */
+export const calculatePeriodChange = (current: number, previous: number): number | null =>
+  previous === 0 ? null : (current - previous) / previous;

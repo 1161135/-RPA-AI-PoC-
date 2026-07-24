@@ -30,7 +30,7 @@ describe('AppShell', () => {
     const onExport = vi.fn();
     render(<CockpitProvider><AppShell onExport={onExport}><span>内容</span></AppShell></CockpitProvider>);
 
-    fireEvent.click(screen.getByRole('button', { name: /导出当前报表/ }));
+    fireEvent.click(screen.getByRole('button', { name: /导出 Power BI 数据集/ }));
     expect(onExport).toHaveBeenCalledOnce();
   });
 
