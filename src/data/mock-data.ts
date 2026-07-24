@@ -1,4 +1,4 @@
-import type { ChannelId } from '../domain/types';
+import type { AutomationTask, ChannelId } from '../domain/types';
 
 export type SourceRow = {
   date: string;
@@ -68,3 +68,10 @@ export const sourceRows: SourceRow[] = dates.flatMap((date, dateIndex) =>
 );
 
 export const lastSuccessfulAt = '2026-07-24T08:25:00+08:00';
+
+/** One fixture source drives task health, ROI and adapter state across all views. */
+export const automationTaskFixtures: AutomationTask[] = [
+  { id: 'task-tmall', task: '淘宝/天猫经营数据采集', channel: 'tmall', status: 'success', demoDate: '2026-07-23', lastSuccessfulAt, isFallback: false, manualMinutes: 8, successfulRuns: 86, detail: '08:30 · 模拟采集完成' },
+  { id: 'task-jd', task: '京东经营数据采集', channel: 'jd', status: 'failed', demoDate: '2026-07-23', lastSuccessfulAt, isFallback: true, manualMinutes: 8, successfulRuns: 0, detail: '08:25 · 登录会话失效（模拟），已保留最近成功快照' },
+  { id: 'task-douyin', task: '抖音经营数据采集', channel: 'douyin', status: 'success', demoDate: '2026-07-23', lastSuccessfulAt, isFallback: false, manualMinutes: 8, successfulRuns: 100, detail: '08:30 · 模拟采集完成' },
+];

@@ -12,8 +12,25 @@ export type Anomaly = {
   title: string;
   detail: string;
   recommendation: string;
+  channel: ChannelId;
+  demoDate: string;
+  source?: 'preset' | 'detected';
   createdAt: string;
   history: Array<{ at: string; by: Role; status: AnomalyStatus; note: string }>;
+};
+
+export type AutomationTaskStatus = 'success' | 'failed';
+export type AutomationTask = {
+  id: string;
+  task: string;
+  channel: ChannelId;
+  status: AutomationTaskStatus;
+  demoDate: string;
+  lastSuccessfulAt: string;
+  isFallback: boolean;
+  manualMinutes: number;
+  successfulRuns: number;
+  detail: string;
 };
 
 const allowedTransitions: Record<Role, Record<AnomalyStatus, AnomalyStatus[]>> = {

@@ -1,15 +1,12 @@
 import { sourceRows } from '../data/mock-data';
-import { useCockpitContext } from '../hooks/useCockpitData';
+import { useAutomationTasks, useCockpitContext } from '../hooks/useCockpitData';
 import { downloadCsv, generatePowerBiCsv, POWER_BI_FIELDS } from '../services/export';
 
-const adapters = [
-  { name: '淘宝/天猫', source: '模拟适配器', status: '已就绪', detail: '未来可替换为开放平台 API、后台导出或 RPA 下载。' },
-  { name: '京东', source: '模拟适配器', status: '已就绪', detail: '采集失败时保留最近一次成功快照，不以 0 覆盖。' },
-  { name: '抖音', source: '模拟适配器', status: '已就绪', detail: '未来可替换为开放平台授权数据或合规导出文件。' },
-] as const;
+const channelNames = { tmall: '淘宝/天猫', jd: '京东', douyin: '抖音' } as const;
 
 export function IntegrationPage() {
   const { filters } = useCockpitContext();
+  const tasks = useAutomationTasks();
   const exportCurrentDataset = () => {
     const csv = generatePowerBiCsv(sourceRows, filters);
     downloadCsv(csv, 'rpa-cockpit-power-bi-dataset.csv');
@@ -29,10 +26,10 @@ export function IntegrationPage() {
       <article className="panel">
         <div className="panel-header"><div><h3>渠道适配器状态</h3><p>演示环境 · 每日 08:30 模拟刷新</p></div></div>
         <div className="anomaly-list" aria-label="渠道适配器状态">
-          {adapters.map((adapter) => <article className="anomaly-row" key={adapter.name}>
+          {tasks.map((task) => <article className="anomaly-row" data-testid={`adapter-${task.channel}`} key={task.id}>
             <span className="severity medium">源</span>
-            <span><b>{adapter.name}</b><small>{adapter.source} · {adapter.detail}</small></span>
-            <em><span className="status-tag">{adapter.status}</span></em>
+            <span><b>{channelNames[task.channel]}</b><small>模拟适配器 · {task.isFallback ? '采集失败，保留最近一次成功快照，不以 0 覆盖。' : '模拟采集完成，可替换为真实平台适配器。'}</small></span>
+            <em><span className="status-tag">{task.isFallback ? '降级/快照' : '已就绪'}</span></em>
           </article>)}
         </div>
       </article>

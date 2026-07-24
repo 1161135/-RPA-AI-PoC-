@@ -33,4 +33,11 @@ describe('AppShell', () => {
     fireEvent.click(screen.getByRole('button', { name: /导出当前报表/ }));
     expect(onExport).toHaveBeenCalledOnce();
   });
+
+  it('derives the anomaly badge from visible scoped anomaly data', () => {
+    render(<CockpitProvider><AppShell><ChannelProbe /></AppShell></CockpitProvider>);
+    expect(screen.getByTestId('anomaly-badge')).toHaveTextContent('3');
+    fireEvent.click(screen.getByRole('button', { name: '抖音' }));
+    expect(screen.getByTestId('anomaly-badge')).toHaveTextContent('2');
+  });
 });

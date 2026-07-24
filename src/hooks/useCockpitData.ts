@@ -1,7 +1,9 @@
 import { createContext, createElement, useContext, useMemo, useState, type PropsWithChildren } from 'react';
-import type { ChannelId, Role } from '../domain/types';
-import { sourceRows, type SourceRow } from '../data/mock-data';
+import type { Anomaly, AutomationTask, ChannelId, Role } from '../domain/types';
+import { automationTaskFixtures, sourceRows, type SourceRow } from '../data/mock-data';
 import { calculateMetrics } from '../services/metrics';
+import { detectAnomalies } from '../services/anomalies';
+import { loadAnomalies, saveAnomalies } from '../services/storage';
 
 export type PeriodPreset = 'yesterday' | 'last_7_days' | 'month' | 'custom';
 export type CockpitFilters = { period: PeriodPreset; channels: ChannelId[]; customRange?: { from: string; to: string } };
@@ -12,6 +14,8 @@ export type CockpitContextValue = {
   toggleChannel: (channel: ChannelId) => void;
   setRole: (role: Role) => void;
   setCustomRange: (range: NonNullable<CockpitFilters['customRange']>) => void;
+  anomalyRecords: Anomaly[];
+  persistAnomalies: (next: Anomaly[]) => void;
 };
 
 export type ChannelMetric = ReturnType<typeof calculateMetrics> & { channel: ChannelId };
@@ -20,6 +24,8 @@ export type SkuMetric = ReturnType<typeof calculateMetrics> & {
   sku: string;
   stock: number;
   averageDailySales: number;
+  channel: ChannelId;
+  demoDate: string;
 };
 export type CockpitData = {
   filteredRows: SourceRow[];
@@ -35,8 +41,10 @@ const CockpitContext = createContext<CockpitContextValue | null>(null);
 export function CockpitProvider({ children }: PropsWithChildren) {
   const [filters, setFilters] = useState<CockpitFilters>({ period: 'yesterday', channels: ALL_CHANNELS });
   const [role, setRole] = useState<Role>('operator');
+  const [anomalyRecords, setAnomalyRecords] = useState<Anomaly[]>(loadAnomalies);
   const value = useMemo<CockpitContextValue>(() => ({
-    filters, role, setRole,
+    filters, role, setRole, anomalyRecords,
+    persistAnomalies: (next) => { setAnomalyRecords(next); saveAnomalies(next); },
     setPeriod: (period) => setFilters((current) => ({ ...current, period })),
     toggleChannel: (channel) => setFilters((current) => {
       const selected = current.channels.includes(channel);
@@ -44,7 +52,7 @@ export function CockpitProvider({ children }: PropsWithChildren) {
       return { ...current, channels: selected ? current.channels.filter((item) => item !== channel) : [...current.channels, channel] };
     }),
     setCustomRange: (customRange) => setFilters((current) => ({ ...current, period: 'custom', customRange })),
-  }), [filters, role]);
+  }), [anomalyRecords, filters, role]);
   return createElement(CockpitContext.Provider, { value }, children);
 }
 
@@ -88,8 +96,30 @@ export function useCockpitData(): CockpitData {
     const skuMetrics = skuIds.map((sku) => {
       const rows = filteredRows.filter((row) => row.sku === sku);
       const latest = rows[rows.length - 1];
-      return { sku, ...aggregateRows(rows), stock: latest?.stock ?? 0, averageDailySales: latest?.averageDailySales ?? 0 };
+      return { sku, ...aggregateRows(rows), stock: latest?.stock ?? 0, averageDailySales: latest?.averageDailySales ?? 0, channel: latest?.channel ?? 'tmall', demoDate: latest?.date ?? '' };
     });
     return { filteredRows, metrics: aggregateRows(filteredRows), channelMetrics, trend, skuMetrics };
+  }, [filters]);
+}
+
+/** Workflow records use the same global time and channel scope as the dashboard. */
+export function useScopedAnomalies(): Anomaly[] {
+  const { filters, anomalyRecords } = useCockpitContext();
+  const { skuMetrics } = useCockpitData();
+  return useMemo(() => {
+    const scopedDates = datesForPeriod(sourceRows, filters);
+    const all = detectAnomalies(
+      skuMetrics.map(({ sku, stock, averageDailySales, channel, demoDate }) => ({ sku, stock, averageDailySales, channel, demoDate })),
+      anomalyRecords,
+    );
+    return all.filter((anomaly) => filters.channels.includes(anomaly.channel) && scopedDates.has(anomaly.demoDate));
+  }, [anomalyRecords, filters, skuMetrics]);
+}
+
+export function useAutomationTasks(): AutomationTask[] {
+  const { filters } = useCockpitContext();
+  return useMemo(() => {
+    const scopedDates = datesForPeriod(sourceRows, filters);
+    return automationTaskFixtures.filter((task) => filters.channels.includes(task.channel) && scopedDates.has(task.demoDate));
   }, [filters]);
 }

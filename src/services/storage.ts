@@ -1,4 +1,4 @@
-import type { Anomaly, AnomalyStatus, Role } from '../domain/types';
+import { canTransitionAnomaly, type Anomaly, type AnomalyStatus, type Role } from '../domain/types';
 
 export const ANOMALIES_STORAGE_KEY = 'rpa-cockpit-anomalies';
 
@@ -13,6 +13,9 @@ const simulatedAnomalies: Anomaly[] = [
     detail: '模拟数据：需复核内容流量、商品页与活动价格。',
     recommendation: '检查商品链接、投放计划和详情页转化链路。',
     createdAt: '2026-07-24T08:30:00+08:00',
+    channel: 'douyin',
+    demoDate: '2026-07-23',
+    source: 'preset',
     history: [],
   },
   {
@@ -25,6 +28,9 @@ const simulatedAnomalies: Anomaly[] = [
     detail: '模拟规则命中：敏感宣传语待人工药师确认。',
     recommendation: '暂停素材更新，并提交合规审核。',
     createdAt: '2026-07-24T08:30:00+08:00',
+    channel: 'tmall',
+    demoDate: '2026-07-23',
+    source: 'preset',
     history: [],
   },
 ];
@@ -47,7 +53,8 @@ export function updateAnomalyStatus(
   status: AnomalyStatus,
   by: Role,
   note: string,
-): Anomaly {
+): Anomaly | null {
+  if (!canTransitionAnomaly(by, anomaly.status, status)) return null;
   return {
     ...anomaly,
     status,

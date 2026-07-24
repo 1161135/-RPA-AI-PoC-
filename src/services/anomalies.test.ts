@@ -3,8 +3,8 @@ import type { Anomaly } from '../domain/types';
 import { detectAnomalies } from './anomalies';
 
 const products = [
-  { sku: 'SKU-203', stock: 8, averageDailySales: 3 },
-  { sku: 'SKU-ZERO', stock: 0, averageDailySales: 0 },
+  { sku: 'SKU-203', stock: 8, averageDailySales: 3, channel: 'jd' as const, demoDate: '2026-07-23' },
+  { sku: 'SKU-ZERO', stock: 0, averageDailySales: 0, channel: 'jd' as const, demoDate: '2026-07-23' },
 ];
 
 describe('detectAnomalies', () => {
@@ -21,7 +21,7 @@ describe('detectAnomalies', () => {
   });
 
   it('does not create a high inventory anomaly when zero stock has no sales velocity', () => {
-    expect(detectAnomalies([{ sku: 'SKU-ZERO', stock: 0, averageDailySales: 0 }], [])).toEqual([]);
+    expect(detectAnomalies([{ sku: 'SKU-ZERO', stock: 0, averageDailySales: 0, channel: 'jd', demoDate: '2026-07-23' }], [])).toEqual([]);
   });
 
   it('deduplicates generated anomalies and preserves existing workflow history', () => {
@@ -35,6 +35,8 @@ describe('detectAnomalies', () => {
       detail: '保留详情',
       recommendation: '保留建议',
       createdAt: '2026-07-24T08:30:00',
+      channel: 'jd',
+      demoDate: '2026-07-23',
       history: [{ at: '2026-07-24T09:00:00', by: 'operator', status: 'in_progress', note: '已认领' }],
     };
 

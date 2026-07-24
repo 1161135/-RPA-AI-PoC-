@@ -1,42 +1,33 @@
-import { useMemo, useState } from 'react';
-import type { Anomaly, AnomalyStatus } from '../domain/types';
-import { useCockpitContext, useCockpitData } from '../hooks/useCockpitData';
-import { detectAnomalies } from '../services/anomalies';
-import { loadAnomalies, saveAnomalies, updateAnomalyStatus } from '../services/storage';
+import { useState } from 'react';
+import { canTransitionAnomaly, type Anomaly, type AnomalyStatus, type Role } from '../domain/types';
+import { useCockpitContext, useScopedAnomalies } from '../hooks/useCockpitData';
+import { updateAnomalyStatus } from '../services/storage';
 import { AnomalyList } from '../components/AnomalyList';
 
 export function AnomaliesPage() {
-  const { role } = useCockpitContext();
-  const { skuMetrics } = useCockpitData();
-  const [records, setRecords] = useState(loadAnomalies);
-  const [pendingChange, setPendingChange] = useState<{ anomaly: Anomaly; status: AnomalyStatus } | null>(null);
+  const { role, anomalyRecords, persistAnomalies } = useCockpitContext();
+  const anomalies = useScopedAnomalies();
+  const [pendingChange, setPendingChange] = useState<{ anomaly: Anomaly; status: AnomalyStatus; actor: Role } | null>(null);
   const [note, setNote] = useState('');
-  const anomalies = useMemo(
-    () => detectAnomalies(skuMetrics.map(({ sku, stock, averageDailySales }) => ({ sku, stock, averageDailySales })), records),
-    [records, skuMetrics],
-  );
-
-  const persist = (next: Anomaly[]) => {
-    setRecords(next);
-    saveAnomalies(next);
-  };
-
   const requestTransition = (anomaly: Anomaly, status: AnomalyStatus) => {
-    setPendingChange({ anomaly, status });
+    setPendingChange({ anomaly, status, actor: role });
     setNote('');
   };
 
   const confirmTransition = () => {
-    if (!pendingChange || !note.trim()) return;
-    persist(anomalies.map((item) => item.id === pendingChange.anomaly.id
-      ? updateAnomalyStatus(item, pendingChange.status, role, note.trim()) : item));
+    if (!pendingChange || !note.trim() || pendingChange.actor !== role) return;
+    const current = anomalies.find((item) => item.id === pendingChange.anomaly.id);
+    if (!current || !canTransitionAnomaly(pendingChange.actor, current.status, pendingChange.status)) return;
+    const next = updateAnomalyStatus(current, pendingChange.status, pendingChange.actor, note.trim());
+    if (!next) return;
+    persistAnomalies(anomalyRecords.map((item) => item.id === current.id ? next : item));
     setPendingChange(null);
   };
 
   const assignOwner = (anomaly: Anomaly) => {
     const nextOwner = window.prompt('输入负责人', anomaly.owner);
     if (!nextOwner?.trim()) return;
-    persist(anomalies.map((item) => item.id === anomaly.id ? { ...item, owner: nextOwner.trim() } : item));
+    persistAnomalies(anomalyRecords.map((item) => item.id === anomaly.id ? { ...item, owner: nextOwner.trim() } : item));
   };
 
   return <section id="anomalies" className="page-section">

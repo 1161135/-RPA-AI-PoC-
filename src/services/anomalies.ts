@@ -1,9 +1,11 @@
-import type { Anomaly } from '../domain/types';
+import type { Anomaly, ChannelId } from '../domain/types';
 
 export type ProductInventory = {
   sku: string;
   stock: number;
   averageDailySales: number;
+  channel: ChannelId;
+  demoDate: string;
 };
 
 const createInventoryAnomaly = (product: ProductInventory): Anomaly => ({
@@ -16,6 +18,9 @@ const createInventoryAnomaly = (product: ProductInventory): Anomaly => ({
   detail: `当前库存 ${product.stock}，近 7 日平均日销 ${product.averageDailySales}`,
   recommendation: '复核库存并安排补货',
   createdAt: '2026-07-24T08:30:00+08:00',
+  channel: product.channel,
+  demoDate: product.demoDate,
+  source: 'detected',
   history: [],
 });
 
