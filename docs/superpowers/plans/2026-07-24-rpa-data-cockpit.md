@@ -15,6 +15,8 @@
 ```text
 package.json                         Tool scripts and dependencies
 vite.config.ts                       Vite and Vitest configuration
+tsconfig.json                        TypeScript project references
+tsconfig.app.json                    Browser TypeScript compiler configuration
 playwright.config.ts                 Browser test configuration
 src/main.tsx                         React bootstrap
 src/App.tsx                          Route and application-shell composition
@@ -50,11 +52,14 @@ README.md                            Local run and demonstration instructions
 **Files:**
 - Create: `package.json`
 - Create: `vite.config.ts`
+- Create: `tsconfig.json`
+- Create: `tsconfig.app.json`
 - Create: `index.html`
 - Create: `src/main.tsx`
 - Create: `src/App.tsx`
 - Create: `src/domain/types.ts`
 - Create: `src/test/setup.ts`
+- Create: `src/styles/global.css`
 - Create: `src/domain/types.test.ts`
 
 - [ ] **Step 1: Write the failing domain-permission test.**
@@ -83,7 +88,7 @@ Expected: command fails because `package.json` or the test file does not exist.
 {
   "scripts": { "dev": "vite", "build": "tsc -b && vite build", "test": "vitest", "test:run": "vitest run", "test:e2e": "playwright test" },
   "dependencies": { "@vitejs/plugin-react": "latest", "recharts": "latest", "react": "latest", "react-dom": "latest", "react-router-dom": "latest", "vite": "latest", "typescript": "latest" },
-  "devDependencies": { "@playwright/test": "latest", "@testing-library/jest-dom": "latest", "@testing-library/react": "latest", "jsdom": "latest", "vitest": "latest" }
+  "devDependencies": { "@playwright/test": "latest", "@testing-library/jest-dom": "latest", "@testing-library/react": "latest", "@testing-library/user-event": "latest", "@types/react": "latest", "@types/react-dom": "latest", "jsdom": "latest", "vitest": "latest" }
 }
 ```
 
@@ -106,6 +111,23 @@ export const canTransitionAnomaly = (role: Role, from: AnomalyStatus, to: Anomal
 
 - [ ] **Step 4: Add minimal bootstrap files.**
 
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+export default defineConfig({ plugins: [react()], test: { environment: 'jsdom', setupFiles: './src/test/setup.ts' } });
+```
+
+```json
+// tsconfig.json
+{ "files": [], "references": [{ "path": "./tsconfig.app.json" }] }
+```
+
+```json
+// tsconfig.app.json
+{ "compilerOptions": { "target": "ES2022", "useDefineForClassFields": true, "lib": ["ES2022", "DOM", "DOM.Iterable"], "allowJs": false, "skipLibCheck": true, "esModuleInterop": true, "module": "ESNext", "moduleResolution": "Bundler", "resolveJsonModule": true, "isolatedModules": true, "noEmit": true, "jsx": "react-jsx", "strict": true }, "include": ["src"] }
+```
+
 ```tsx
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -116,6 +138,16 @@ createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></R
 
 ```tsx
 export default function App() { return <main><h1>智营 RPA 数据驾驶舱</h1></main>; }
+```
+
+```ts
+// src/test/setup.ts
+import '@testing-library/jest-dom/vitest';
+```
+
+```css
+/* src/styles/global.css */
+* { box-sizing: border-box; } body { margin: 0; font-family: Inter, "Microsoft YaHei", sans-serif; }
 ```
 
 - [ ] **Step 5: Run the unit test and production build.**
@@ -160,7 +192,8 @@ Expected: FAIL because the service modules do not exist.
 - [ ] **Step 3: Define the adapter boundary and deterministic source fixtures.**
 
 ```ts
-export interface ChannelAdapter<T> { channel: 'tmall' | 'jd' | 'douyin'; load(): Promise<T[]>; lastSuccessfulAt: string; status: 'success' | 'failed'; }
+export type AdapterLoadResult<T> = { rows: T[]; status: 'success' | 'failed'; lastSuccessfulAt: string; isFallback: boolean; error?: string };
+export interface ChannelAdapter<T> { channel: 'tmall' | 'jd' | 'douyin'; load(): Promise<AdapterLoadResult<T>>; }
 ```
 
 ```ts
@@ -170,6 +203,8 @@ export const sourceRows = [
   { date: '2026-07-23', channel: 'douyin', sku: 'SKU-305', visits: 1100, paidOrders: 31, paidAmount: 3720, refundedAmount: 120, stock: 160, averageDailySales: 7 }
 ];
 ```
+
+Extend `sourceRows` with seven consecutive dates for all three channels, at least two SKUs per channel, one refund, and a failed-adapter fallback snapshot. This fixture set is required to make yesterday, seven-day, monthly, trend, contribution, and failure-degradation tests meaningful.
 
 - [ ] **Step 4: Implement metric and anomaly services.**
 
@@ -187,7 +222,7 @@ export const calculateSavedHours = (successfulRuns: number, manualMinutes: numbe
 
 ```ts
 export function detectAnomalies(products: Array<{ sku: string; stock: number; averageDailySales: number }>, existing: import('../domain/types').Anomaly[]) {
-  const inventory = products.filter(p => p.stock / p.averageDailySales < 3).map(p => ({ id: `stock-${p.sku}`, type: '库存风险', severity: 'high' as const, status: 'pending' as const, owner: '供应链专员', title: `${p.sku} 库存可售天数低于 3 天`, detail: '需要复核库存并创建补货跟进。', recommendation: '复核库存并安排补货', createdAt: '2026-07-24T08:30:00', history: [] }));
+  const inventory = products.filter(p => p.averageDailySales > 0 && p.stock / p.averageDailySales < 3).map(p => ({ id: `stock-${p.sku}`, type: '库存风险', severity: 'high' as const, status: 'pending' as const, owner: '供应链专员', title: `${p.sku} 库存可售天数低于 3 天`, detail: '需要复核库存并创建补货跟进。', recommendation: '复核库存并安排补货', createdAt: '2026-07-24T08:30:00', history: [] }));
   return [...existing, ...inventory];
 }
 ```
@@ -215,10 +250,10 @@ Run: `git add src/data src/adapters src/services src/domain src/**/*.test.ts && 
 - [ ] **Step 1: Write a failing filter test.**
 
 ```tsx
-it('changes all dashboard data when the channel filter changes', async () => {
-  render(<AppShell><span data-testid="value">淘宝/天猫</span></AppShell>);
+it('provides the changed channel selection to a shell child', async () => {
+  render(<CockpitProvider><AppShell><ChannelProbe /></AppShell></CockpitProvider>);
   await userEvent.selectOptions(screen.getByLabelText('渠道'), 'jd');
-  expect(screen.getByTestId('value')).toHaveTextContent('京东');
+  expect(screen.getByTestId('selected-channels')).toHaveTextContent('jd');
 });
 ```
 
@@ -469,7 +504,7 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({ testDir: './e2e', use: { baseURL: 'http://127.0.0.1:4173' }, webServer: { command: 'npm run dev -- --host 127.0.0.1', url: 'http://127.0.0.1:5173', reuseExistingServer: true } });
 ```
 
-Set the Playwright `baseURL` to the same Vite port used by the `webServer` (`http://127.0.0.1:5173`) before executing the test.
+Use the same Vite port for `baseURL` and `webServer` (`http://127.0.0.1:5173`) before executing the test.
 
 - [ ] **Step 4: Run all verification commands.**
 
