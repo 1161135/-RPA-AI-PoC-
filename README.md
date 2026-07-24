@@ -42,3 +42,13 @@ npm run build
 ## 真实集成前提
 
 生产接入前须由企业确认并授权：各平台开放接口/后台导出权限，ERP/WMS 数据接口，跨平台 SKU 与指标口径，Power BI 数据模型、网关及刷新权限，以及医药合规、账号权限和个人信息处理边界。系统设计将真实接入隔离在适配器层，后续可替换数据来源而无需重写经营指标、异常规则和网页看板。
+
+## 端到端验证
+
+```bash
+npx playwright test
+npm run test:run
+npm run build
+```
+
+端到端测试会在 `http://127.0.0.1:5173` 自动启动本地服务，覆盖运营专员的异常处理闭环与管理层只读权限。失败时的截图、trace 和 HTML 报告位于 `output/playwright/`；本机需安装 Google Chrome，配置会通过 Chrome 通道运行测试。
