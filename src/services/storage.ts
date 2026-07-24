@@ -1,4 +1,4 @@
-import { canTransitionAnomaly, type Anomaly, type AnomalyStatus, type Role } from '../domain/types';
+import { canTransitionAnomaly, type Anomaly, type AnomalyStatus, type HandlingMethod, type Role } from '../domain/types';
 
 export const ANOMALIES_STORAGE_KEY = 'rpa-cockpit-anomalies';
 
@@ -53,11 +53,12 @@ export function updateAnomalyStatus(
   status: AnomalyStatus,
   by: Role,
   note: string,
+  method: HandlingMethod = '人工复核',
 ): Anomaly | null {
   if (!canTransitionAnomaly(by, anomaly.status, status)) return null;
   return {
     ...anomaly,
     status,
-    history: [...anomaly.history, { at: new Date().toISOString(), by, status, note }],
+    history: [...anomaly.history, { at: new Date().toISOString(), by, status, note, method }],
   };
 }

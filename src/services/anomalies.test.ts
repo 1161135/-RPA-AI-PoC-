@@ -24,6 +24,17 @@ describe('detectAnomalies', () => {
     expect(detectAnomalies([{ sku: 'SKU-ZERO', stock: 0, averageDailySales: 0, channel: 'jd', demoDate: '2026-07-23' }], [])).toEqual([]);
   });
 
+  it('creates sales and price anomalies when configured thresholds are exceeded', () => {
+    const detected = detectAnomalies([{
+      sku: 'SKU-RULE', stock: 100, averageDailySales: 10, channel: 'tmall', demoDate: '2026-07-23',
+      latestPaidOrders: 12, averageDailyOrders: 20, currentPrice: 88, targetPrice: 100,
+    }], []);
+    expect(detected).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: 'sales-SKU-RULE-2026-07-23', type: '销量异常' }),
+      expect.objectContaining({ id: 'price-SKU-RULE-2026-07-23', type: '价格异常' }),
+    ]));
+  });
+
   it('deduplicates generated anomalies and preserves existing workflow history', () => {
     const existing: Anomaly = {
       id: 'stock-SKU-203',

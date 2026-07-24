@@ -36,8 +36,8 @@ describe('AppShell', () => {
 
   it('derives the anomaly badge from visible scoped anomaly data', () => {
     render(<CockpitProvider><AppShell><ChannelProbe /></AppShell></CockpitProvider>);
-    expect(screen.getByTestId('anomaly-badge')).toHaveTextContent('3');
+    expect(screen.getByTestId('anomaly-badge')).toHaveTextContent('6');
     fireEvent.click(screen.getByRole('button', { name: '抖音' }));
-    expect(screen.getByTestId('anomaly-badge')).toHaveTextContent('2');
+    expect(screen.getByTestId('anomaly-badge')).toHaveTextContent('4');
   });
 });

@@ -18,7 +18,7 @@ if (process.env.VITEST) {
     await page.getByLabel('处理说明').fill('已复核并完成处理。');
     await page.getByRole('button', { name: '确认流转' }).click();
 
-    await expect(page.getByText('已解决', { exact: false }).first()).toBeVisible();
+    await expect(page.getByTestId('anomaly-status-conversion-SKU-305')).toHaveText('处理中');
   });
 
   test('管理层仅查看异常，不能执行流程操作', async ({ page }) => {

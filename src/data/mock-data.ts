@@ -10,6 +10,8 @@ export type SourceRow = {
   refundedAmount: number;
   stock: number;
   averageDailySales: number;
+  averageDailyOrders: number;
+  targetPrice: number;
 };
 
 const dates = [
@@ -29,22 +31,22 @@ const channelFixtures: Array<{
   {
     channel: 'tmall',
     products: [
-      { sku: 'SKU-101', visits: 1400, paidOrders: 84, paidAmount: 12480, refundedAmount: 420, stock: 320, averageDailySales: 18 },
-      { sku: 'SKU-102', visits: 960, paidOrders: 42, paidAmount: 5880, refundedAmount: 0, stock: 175, averageDailySales: 10 },
+      { sku: 'SKU-101', visits: 1400, paidOrders: 84, paidAmount: 12480, refundedAmount: 420, stock: 320, averageDailySales: 18, averageDailyOrders: 86, targetPrice: 170 },
+      { sku: 'SKU-102', visits: 960, paidOrders: 42, paidAmount: 5880, refundedAmount: 0, stock: 175, averageDailySales: 10, averageDailyOrders: 44, targetPrice: 180 },
     ],
   },
   {
     channel: 'jd',
     products: [
-      { sku: 'SKU-203', visits: 760, paidOrders: 29, paidAmount: 4350, refundedAmount: 0, stock: 8, averageDailySales: 3 },
-      { sku: 'SKU-204', visits: 520, paidOrders: 24, paidAmount: 3120, refundedAmount: 80, stock: 96, averageDailySales: 6 },
+      { sku: 'SKU-203', visits: 760, paidOrders: 29, paidAmount: 4350, refundedAmount: 0, stock: 8, averageDailySales: 3, averageDailyOrders: 30, targetPrice: 210 },
+      { sku: 'SKU-204', visits: 520, paidOrders: 24, paidAmount: 3120, refundedAmount: 80, stock: 96, averageDailySales: 6, averageDailyOrders: 20, targetPrice: 150 },
     ],
   },
   {
     channel: 'douyin',
     products: [
-      { sku: 'SKU-305', visits: 1100, paidOrders: 31, paidAmount: 3720, refundedAmount: 120, stock: 160, averageDailySales: 7 },
-      { sku: 'SKU-306', visits: 820, paidOrders: 38, paidAmount: 4560, refundedAmount: 0, stock: 140, averageDailySales: 8 },
+      { sku: 'SKU-305', visits: 1100, paidOrders: 31, paidAmount: 3720, refundedAmount: 120, stock: 160, averageDailySales: 7, averageDailyOrders: 45, targetPrice: 178 },
+      { sku: 'SKU-306', visits: 820, paidOrders: 38, paidAmount: 4560, refundedAmount: 0, stock: 140, averageDailySales: 8, averageDailyOrders: 40, targetPrice: 165 },
     ],
   },
 ];

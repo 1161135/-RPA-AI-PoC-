@@ -24,6 +24,10 @@ export type SkuMetric = ReturnType<typeof calculateMetrics> & {
   sku: string;
   stock: number;
   averageDailySales: number;
+  latestPaidOrders: number;
+  averageDailyOrders: number;
+  currentPrice: number;
+  targetPrice: number;
   channel: ChannelId;
   demoDate: string;
 };
@@ -98,7 +102,12 @@ export function useCockpitData(): CockpitData {
     const skuMetrics = skuIds.map((sku) => {
       const rows = filteredRows.filter((row) => row.sku === sku);
       const latest = rows[rows.length - 1];
-      return { sku, ...aggregateRows(rows), stock: latest?.stock ?? 0, averageDailySales: latest?.averageDailySales ?? 0, channel: latest?.channel ?? 'tmall', demoDate: latest?.date ?? '' };
+      return {
+        sku, ...aggregateRows(rows), stock: latest?.stock ?? 0, averageDailySales: latest?.averageDailySales ?? 0,
+        latestPaidOrders: latest?.paidOrders ?? 0, averageDailyOrders: latest?.averageDailyOrders ?? 0,
+        currentPrice: latest && latest.paidOrders > 0 ? latest.paidAmount / latest.paidOrders : 0,
+        targetPrice: latest?.targetPrice ?? 0, channel: latest?.channel ?? 'tmall', demoDate: latest?.date ?? '',
+      };
     });
     const selectedDateList = [...selectedDates].sort();
     const firstSelectedIndex = allDates.indexOf(selectedDateList[0]);
@@ -124,7 +133,7 @@ export function useScopedAnomalies(): Anomaly[] {
   return useMemo(() => {
     const scopedDates = datesForPeriod(sourceRows, filters);
     const all = detectAnomalies(
-      skuMetrics.map(({ sku, stock, averageDailySales, channel, demoDate }) => ({ sku, stock, averageDailySales, channel, demoDate })),
+      skuMetrics.map(({ sku, stock, averageDailySales, latestPaidOrders, averageDailyOrders, currentPrice, targetPrice, channel, demoDate }) => ({ sku, stock, averageDailySales, latestPaidOrders, averageDailyOrders, currentPrice, targetPrice, channel, demoDate })),
       anomalyRecords,
     );
     return all.filter((anomaly) => filters.channels.includes(anomaly.channel) && scopedDates.has(anomaly.demoDate));

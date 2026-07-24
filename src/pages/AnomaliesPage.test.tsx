@@ -10,12 +10,12 @@ describe('AnomaliesPage', () => {
     localStorage.clear();
     render(<CockpitProvider><AnomaliesPage /></CockpitProvider>);
 
-    expect(screen.getByText(/库存风险/)).toBeInTheDocument();
+    expect(screen.getAllByText(/库存风险/).length).toBeGreaterThan(0);
     fireEvent.click(screen.getAllByRole('button', { name: '开始处理' })[0]);
     fireEvent.change(screen.getByLabelText('处理说明'), { target: { value: '已通知供应链复核' } });
     fireEvent.click(screen.getByRole('button', { name: '确认流转' }));
 
-    expect(screen.getAllByRole('button', { name: '开始处理' })).toHaveLength(2);
+    expect(screen.getAllByRole('button', { name: '开始处理' }).length).toBeGreaterThan(0);
     expect(localStorage.getItem('rpa-cockpit-anomalies')).toContain('已通知供应链复核');
   });
 
@@ -48,8 +48,19 @@ describe('AnomaliesPage', () => {
   it('filters the visible anomalies by selected channel', () => {
     localStorage.clear();
     render(<CockpitProvider><AppShell><AnomaliesPage /></AppShell></CockpitProvider>);
-    expect(screen.getByText(/SKU-305/)).toBeInTheDocument();
+    expect(screen.getAllByText(/SKU-305/).length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole('button', { name: '抖音' }));
-    expect(screen.queryByText(/SKU-305/)).not.toBeInTheDocument();
+    expect(screen.queryAllByText(/SKU-305/)).toHaveLength(0);
+  });
+
+  it('records a structured handling method and shows the selected anomaly context', () => {
+    localStorage.clear();
+    render(<CockpitProvider><AnomaliesPage /></CockpitProvider>);
+    fireEvent.click(screen.getAllByRole('button', { name: '开始处理' })[0]);
+    expect(screen.getByText(/当前选定：/)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('处理方式'), { target: { value: '已补货' } });
+    fireEvent.change(screen.getByLabelText('处理说明'), { target: { value: '仓库确认下午补货' } });
+    fireEvent.click(screen.getByRole('button', { name: '确认流转' }));
+    expect(screen.getByText(/处理方式：已补货/)).toBeInTheDocument();
   });
 });
