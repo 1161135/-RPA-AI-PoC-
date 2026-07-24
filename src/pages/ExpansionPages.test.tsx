@@ -24,6 +24,6 @@ describe('second-phase PoC pages', () => {
     render(<CreativeCompliancePage />);
     fireEvent.click(screen.getByRole('button', { name: /生成模拟素材/ }));
     expect(screen.getByRole('heading', { name: '合规关键词审核' })).toBeInTheDocument();
-    expect(screen.getByText(/人工终审/)).toBeInTheDocument();
+    expect(screen.getAllByText(/人工终审/).length).toBeGreaterThan(0);
   });
 });
