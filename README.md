@@ -52,6 +52,7 @@ npm audit
 5. 进入「AI 素材与合规」，展示强拦截、弱提示、知识库版本、人工终审与发布打卡。
 
 更完整的产品演示路径见 [演示脚本](docs/portfolio/demo-script.md)。
+通用方法论与行业配置方式见 [电商 RPA + AI 自动化运营体系方案](docs/portfolio/ecommerce-rpa-ai-solution.md)。
 
 ## 技术设计
 
