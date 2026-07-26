@@ -23,6 +23,15 @@ describe('public lead radar pages', () => {
     expect(screen.getByRole('button', { name: '外部动作打卡' })).toBeInTheDocument();
   });
 
+  it('changes status only after a documented external-action check-in', () => {
+    render(<LeadRadarProvider><LeadReviewWorkbenchPage /></LeadRadarProvider>);
+    fireEvent.click(screen.getByRole('button', { name: '人工确认' }));
+    expect(screen.getByTestId('lead-status-lead-001')).toHaveTextContent('待外部执行');
+    fireEvent.click(screen.getByRole('button', { name: '外部动作打卡' }));
+    expect(screen.getByTestId('lead-status-lead-001')).toHaveTextContent('外部执行已打卡');
+    expect(screen.getByText(/external_action_logged/)).toBeInTheDocument();
+  });
+
   it('explains local CSV intake and rule version rollback', () => {
     render(<LeadRadarProvider><LeadImportRulesPage /></LeadRadarProvider>);
 
