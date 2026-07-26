@@ -1,3 +1,5 @@
+@import './lead-radar.css';
+
 .table-panel .numeric-cell {
   text-align: right;
   font-variant-numeric: tabular-nums;

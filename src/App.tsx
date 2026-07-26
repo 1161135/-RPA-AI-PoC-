@@ -9,7 +9,9 @@ import { IntegrationPage } from './pages/IntegrationPage';
 import { CompetitorPricePage } from './pages/CompetitorPricePage';
 import { OrderServicePage } from './pages/OrderServicePage';
 import { CreativeCompliancePage } from './pages/CreativeCompliancePage';
+import { PublicLeadRadarPage } from './pages/PublicLeadRadarPage';
 import { useCockpitContext } from './hooks/useCockpitData';
+import { LeadRadarProvider } from './hooks/useLeadRadar';
 import { sourceRows } from './data/mock-data';
 import { downloadCsv, generatePowerBiCsv } from './services/export';
 import './styles/polish.css';
@@ -31,9 +33,10 @@ function CockpitPages() {
     <CompetitorPricePage />
     <OrderServicePage />
     <CreativeCompliancePage />
+    <PublicLeadRadarPage />
   </AppShell>;
 }
 
 export default function App() {
-  return <CockpitProvider><CockpitPages /></CockpitProvider>;
+  return <CockpitProvider><LeadRadarProvider><CockpitPages /></LeadRadarProvider></CockpitProvider>;
 }
