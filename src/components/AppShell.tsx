@@ -18,7 +18,7 @@ export function AppShell({ children, onExport }: AppShellProps) {
       <div className="brand-mark"><span>智</span><div><b>智营</b><small>RPA DATA COCKPIT</small></div></div>
       <nav className="nav-list">
         <a className="nav-item active" href="#overview">▦　经营总览</a><a className="nav-item" href="#daily-report">▤　每日经营日报</a><a className="nav-item" href="#anomalies">◇　异常中心 <em data-testid="anomaly-badge">{scopedAnomalies.length}</em></a><a className="nav-item" href="#sku-analysis">▤　商品分析</a><a className="nav-item" href="#automation">◌　自动化任务</a><a className="nav-item" href="#integrations">⌘　数据接入与规则</a>
-        <a className="nav-item nav-divider" href="#order-service">▤　订单与售后处理</a><a className="nav-item" href="#creative-compliance">✦　AI 素材与合规</a>
+        <a className="nav-item nav-divider" href="#order-service-workbench">▤　订单与售后工作台</a><a className="nav-item" href="#order-service-rules">⌘　订单与售后规则</a><a className="nav-item" href="#creative-compliance">✦　AI 素材与合规</a>
         <a className="nav-item nav-divider" href="#public-lead-radar">◉　公域需求雷达</a><a className="nav-item" href="#lead-review">◇　合规审核工作台</a><a className="nav-item" href="#lead-rules">⌘　导入与规则中心</a>
         <a className="nav-item nav-divider" href="#pricing-command-center">◉　竞品价格工作台</a><a className="nav-item" href="#pricing-approval">◇　调价建议审批</a><a className="nav-item" href="#pricing-rules">⌘　竞品映射与规则</a>
       </nav>

@@ -1,0 +1,7 @@
+export function OrderServiceRulesPage() {
+  return <section id="order-service-rules" className="page-section">
+    <div className="page-heading"><div><p className="eyebrow">规则治理 · 导入保护 · 降级透明</p><h2>订单与售后规则中心</h2><p>订单异常识别与售后 SLA/分派独立维护，规则变更需由运营主管确认后生效。</p></div></div>
+    <div className="dashboard-grid"><article className="panel"><h3>订单异常识别规则库</h3><div className="formula"><b>价格/优惠冲突</b><p>实付金额与活动规则不一致 ⇒ 高风险，24 小时未处理置顶并通知主管。</p></div><div className="formula"><b>库存/地址校验</b><p>库存不足、区域不可达或地址异常 ⇒ 中风险，72 小时提醒。</p></div><div className="formula"><b>疑似风险订单</b><p>同一脱敏标识短期重复下单 ⇒ 待人工复核，不自动判定欺诈或取消订单。</p></div></article><article className="panel"><h3>售后 SLA 与分派规则库</h3><div className="formula"><b>退款 / 补发</b><p>按渠道、工单类型或品类自动分派；高风险工单必须逐条审核。</p></div><div className="formula"><b>咨询工单</b><p>48 小时 SLA；低风险咨询支持批量认领与批量标记处理。</p></div><div className="formula"><b>规则版本</b><p>v1.0 当前生效 · 修改需主管审批 · 支持查看审计记录与回滚预览。</p></div></article></div>
+    <div className="dashboard-grid"><article className="panel"><h3>导入与脱敏校验</h3><p>仅接受官方 API、客户本地授权导入或显著标注的模拟快照。导入时会拦截未脱敏字段并返回行号和原因。</p><ul><li>姓名仅保留姓氏</li><li>手机号中间四位打码</li><li>地址仅保留省市层级</li><li>支付信息完全隐藏</li></ul></article><article className="panel"><h3>数据降级状态</h3><div className="formula"><b>正常</b><p>授权接口或最新导入数据。</p></div><div className="formula"><b>轻度降级</b><p>复用最近 24 小时成功快照，并显示更新时间。</p></div><div className="formula"><b>完全降级</b><p>切换内置模拟数据，禁止将缺失数据按 0 展示。</p></div></article></div>
+  </section>;
+}

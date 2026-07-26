@@ -15,10 +15,10 @@ describe('order service workflow', () => {
   it('records type-specific external check-ins and closes completed tickets', () => {
     const refund = logExternalAction(afterSalesFixtures[0], { refundAmount: 99, reference: 'RF-101' });
     expect(refund.status).toBe('closed');
-    expect(refund.history.at(-1)?.note).toContain('RF-101');
+    expect(refund.history[refund.history.length - 1]?.note).toContain('RF-101');
     const reshipment = logExternalAction(afterSalesFixtures[1], { trackingNumber: 'SF-20260726', variant: '10ml*2' });
     expect(reshipment.status).toBe('closed');
-    expect(reshipment.history.at(-1)?.note).toContain('SF-20260726');
+    expect(reshipment.history[reshipment.history.length - 1]?.note).toContain('SF-20260726');
     expect(() => logExternalAction(afterSalesFixtures[0], { refundAmount: 99, reference: '' })).toThrow('外部执行字段不完整');
   });
 });

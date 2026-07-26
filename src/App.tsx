@@ -6,7 +6,8 @@ import { ProductAnalysisPage } from './pages/ProductAnalysisPage';
 import { TasksPage } from './pages/TasksPage';
 import { AnomaliesPage } from './pages/AnomaliesPage';
 import { IntegrationPage } from './pages/IntegrationPage';
-import { OrderServicePage } from './pages/OrderServicePage';
+import { OrderServiceWorkbenchPage } from './pages/OrderServiceWorkbenchPage';
+import { OrderServiceRulesPage } from './pages/OrderServiceRulesPage';
 import { CreativeCompliancePage } from './pages/CreativeCompliancePage';
 import { PublicLeadRadarPage } from './pages/PublicLeadRadarPage';
 import { LeadReviewWorkbenchPage } from './pages/LeadReviewWorkbenchPage';
@@ -34,7 +35,8 @@ function CockpitPages() {
     <ProductAnalysisPage />
     <TasksPage />
     <IntegrationPage />
-    <OrderServicePage />
+    <OrderServiceWorkbenchPage />
+    <OrderServiceRulesPage />
     <CreativeCompliancePage />
     <PublicLeadRadarPage />
     <LeadReviewWorkbenchPage />

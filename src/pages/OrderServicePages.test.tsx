@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { CockpitProvider } from '../hooks/useCockpitData';
 import { AppShell } from '../components/AppShell';
 import { OrderServiceWorkbenchPage } from './OrderServiceWorkbenchPage';
+import { OrderServiceRulesPage } from './OrderServiceRulesPage';
 
 describe('order service workbench page', () => {
   afterEach(cleanup);
@@ -19,5 +20,12 @@ describe('order service workbench page', () => {
     render(<CockpitProvider><AppShell><OrderServiceWorkbenchPage /></AppShell></CockpitProvider>);
     fireEvent.click(screen.getByRole('button', { name: '管理层' }));
     expect(screen.queryByRole('button', { name: '开始处理' })).not.toBeInTheDocument();
+  });
+
+  it('shows separate rule libraries, import protection, and degradation states', () => {
+    render(<OrderServiceRulesPage />);
+    expect(screen.getByRole('heading', { name: '订单与售后规则中心' })).toBeInTheDocument();
+    expect(screen.getByText(/完全降级/)).toBeInTheDocument();
+    expect(screen.getByText(/姓名仅保留姓氏/)).toBeInTheDocument();
   });
 });
