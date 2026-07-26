@@ -6,12 +6,14 @@ import { ProductAnalysisPage } from './pages/ProductAnalysisPage';
 import { TasksPage } from './pages/TasksPage';
 import { AnomaliesPage } from './pages/AnomaliesPage';
 import { IntegrationPage } from './pages/IntegrationPage';
-import { CompetitorPricePage } from './pages/CompetitorPricePage';
 import { OrderServicePage } from './pages/OrderServicePage';
 import { CreativeCompliancePage } from './pages/CreativeCompliancePage';
 import { PublicLeadRadarPage } from './pages/PublicLeadRadarPage';
 import { LeadReviewWorkbenchPage } from './pages/LeadReviewWorkbenchPage';
 import { LeadImportRulesPage } from './pages/LeadImportRulesPage';
+import { PricingCommandCenter } from './pages/PricingCommandCenter';
+import { PricingApprovalPage } from './pages/PricingApprovalPage';
+import { PricingRulesPage } from './pages/PricingRulesPage';
 import { useCockpitContext } from './hooks/useCockpitData';
 import { LeadRadarProvider } from './hooks/useLeadRadar';
 import { sourceRows } from './data/mock-data';
@@ -32,12 +34,14 @@ function CockpitPages() {
     <ProductAnalysisPage />
     <TasksPage />
     <IntegrationPage />
-    <CompetitorPricePage />
     <OrderServicePage />
     <CreativeCompliancePage />
     <PublicLeadRadarPage />
     <LeadReviewWorkbenchPage />
     <LeadImportRulesPage />
+    <PricingCommandCenter />
+    <PricingApprovalPage />
+    <PricingRulesPage />
   </AppShell>;
 }
 
