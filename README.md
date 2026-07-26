@@ -51,7 +51,7 @@ npm audit
 4. 进入「订单与售后处理」，展示异常识别、SLA、工单分派以及补发物流凭证留痕。
 5. 进入「AI 素材与合规」，展示强拦截、弱提示、知识库版本、人工终审与发布打卡。
 
-更完整的话术见 [演示脚本](docs/portfolio/demo-script.md)，面试/投递素材见 [作品集说明](docs/portfolio/portfolio-summary.md)。
+更完整的产品演示路径见 [演示脚本](docs/portfolio/demo-script.md)。
 
 ## 技术设计
 
