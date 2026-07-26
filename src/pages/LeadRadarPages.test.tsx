@@ -32,6 +32,13 @@ describe('public lead radar pages', () => {
     expect(screen.getByText(/external_action_logged/)).toBeInTheDocument();
   });
 
+  it('records an auditable copy preparation instead of auto-sending external content', () => {
+    render(<LeadRadarProvider><LeadReviewWorkbenchPage /></LeadRadarProvider>);
+    fireEvent.click(screen.getByRole('button', { name: '复制草稿' }));
+    expect(screen.getByText(/draft_copy_prepared/)).toBeInTheDocument();
+    expect(screen.getByText(/人工在获授权的外部客户端完成发送/)).toBeInTheDocument();
+  });
+
   it('explains local CSV intake and rule version rollback', () => {
     render(<LeadRadarProvider><LeadImportRulesPage /></LeadRadarProvider>);
 
