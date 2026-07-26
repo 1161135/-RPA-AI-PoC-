@@ -1,0 +1,3 @@
+export function CreativeCommandCenterPage() {
+  return <section id="creative-command-center" className="page-section"><div className="page-heading"><div><p className="eyebrow">内容生产与合规 · 模拟脱敏数据</p><h2>AI 素材与合规指挥台</h2><p>看见从草稿生成到人工发布打卡的效率、返工与合规风险。</p></div></div><div className="lead-kpis"><article><small>待审核草稿</small><b>8</b><span>商品内容 + 公域沟通</span></article><article><small>强拦截阻断</small><b>2</b><span>不得进入终审</span></article><article><small>平均审核时长</small><b>18m</b><span>模拟测算</span></article><article><small>待发布打卡</small><b>3</b><span>人工外部发布</span></article></div><article className="panel"><h3>素材生产漏斗（模拟）</h3><p>草稿生成 24 → 规则检测 21（内容废弃 3）→ 人工审核 16（强拦截待改写 2）→ 外部打卡 10（人工退回改写 5）</p></article></section>;
+}
