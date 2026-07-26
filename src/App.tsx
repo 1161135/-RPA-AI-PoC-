@@ -24,7 +24,7 @@ import { downloadCsv, generatePowerBiCsv } from './services/export';
 import './styles/polish.css';
 
 function CockpitPages() {
-  const { filters } = useCockpitContext();
+  const { filters, role } = useCockpitContext();
   const exportCurrentReport = () => downloadCsv(
     generatePowerBiCsv(sourceRows, filters),
     'rpa-cockpit-current-report.csv',
@@ -46,7 +46,7 @@ function CockpitPages() {
     <LeadReviewWorkbenchPage />
     <LeadImportRulesPage />
     <PricingCommandCenter />
-    <PricingApprovalPage />
+    <PricingApprovalPage role={role} />
     <PricingRulesPage />
   </AppShell>;
 }
