@@ -15,6 +15,15 @@ describe('creative compliance pages', () => {
     fireEvent.click(screen.getByRole('button', { name: '管理层' }));
     expect(screen.queryByRole('button', { name: '提交审核' })).not.toBeInTheDocument();
   });
+  it('submits a safe draft for review but keeps a strong block out of the review path', () => {
+    render(<CockpitProvider><AppShell><CreativeReviewPage /></AppShell></CockpitProvider>);
+    fireEvent.click(screen.getByRole('button', { name: '应用低风险改写' }));
+    fireEvent.click(screen.getByRole('button', { name: '提交审核' }));
+    expect(screen.getAllByText(/pending_review/).length).toBeGreaterThan(1);
+    fireEvent.click(screen.getByRole('button', { name: /creative-product-305/ }));
+    expect(screen.queryByRole('button', { name: '提交审核' })).not.toBeInTheDocument();
+    expect(screen.getByText(/强拦截/)).toBeInTheDocument();
+  });
   it('shows strictest-rule precedence and full degradation boundary', () => {
     render(<CreativeRulesPage />);
     expect(screen.getByRole('heading', { name: '素材合规规则中心' })).toBeInTheDocument();
