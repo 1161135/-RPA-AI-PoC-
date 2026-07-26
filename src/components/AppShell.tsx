@@ -27,6 +27,9 @@ export function AppShell({ children, onExport }: AppShellProps) {
         <a className="nav-item nav-divider" href="#competitor-pricing">◫　竞品价格监控</a>
         <a className="nav-item" href="#order-service">▤　订单与售后处理</a>
         <a className="nav-item" href="#creative-compliance">✦　AI 素材与合规</a>
+        <a className="nav-item nav-divider" href="#public-lead-radar">◉　公域需求雷达</a>
+        <a className="nav-item" href="#lead-review">◇　合规审核工作台</a>
+        <a className="nav-item" href="#lead-rules">⌘　导入与规则中心</a>
       </nav>
       <div className="sidebar-footer"><span className="live-dot" />所有数据均为模拟、脱敏数据</div>
     </aside>

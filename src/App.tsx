@@ -11,6 +11,7 @@ import { OrderServicePage } from './pages/OrderServicePage';
 import { CreativeCompliancePage } from './pages/CreativeCompliancePage';
 import { PublicLeadRadarPage } from './pages/PublicLeadRadarPage';
 import { LeadReviewWorkbenchPage } from './pages/LeadReviewWorkbenchPage';
+import { LeadImportRulesPage } from './pages/LeadImportRulesPage';
 import { useCockpitContext } from './hooks/useCockpitData';
 import { LeadRadarProvider } from './hooks/useLeadRadar';
 import { sourceRows } from './data/mock-data';
@@ -36,6 +37,7 @@ function CockpitPages() {
     <CreativeCompliancePage />
     <PublicLeadRadarPage />
     <LeadReviewWorkbenchPage />
+    <LeadImportRulesPage />
   </AppShell>;
 }
 
