@@ -10,6 +10,7 @@ import { CompetitorPricePage } from './pages/CompetitorPricePage';
 import { OrderServicePage } from './pages/OrderServicePage';
 import { CreativeCompliancePage } from './pages/CreativeCompliancePage';
 import { PublicLeadRadarPage } from './pages/PublicLeadRadarPage';
+import { LeadReviewWorkbenchPage } from './pages/LeadReviewWorkbenchPage';
 import { useCockpitContext } from './hooks/useCockpitData';
 import { LeadRadarProvider } from './hooks/useLeadRadar';
 import { sourceRows } from './data/mock-data';
@@ -34,6 +35,7 @@ function CockpitPages() {
     <OrderServicePage />
     <CreativeCompliancePage />
     <PublicLeadRadarPage />
+    <LeadReviewWorkbenchPage />
   </AppShell>;
 }
 
