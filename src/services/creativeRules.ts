@@ -20,5 +20,5 @@ export function appendPublicDisclaimer(text: string): string {
 }
 
 export function applyLowRiskRewrite(text: string): string {
-  return text.replaceAll('绝对有效', '建议结合个人情况').replaceAll('立刻改善', '可关注日常护理');
+  return text.replace(/绝对有效/g, '建议结合个人情况').replace(/立刻改善/g, '可关注日常护理');
 }

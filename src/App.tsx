@@ -8,7 +8,9 @@ import { AnomaliesPage } from './pages/AnomaliesPage';
 import { IntegrationPage } from './pages/IntegrationPage';
 import { OrderServiceWorkbenchPage } from './pages/OrderServiceWorkbenchPage';
 import { OrderServiceRulesPage } from './pages/OrderServiceRulesPage';
-import { CreativeCompliancePage } from './pages/CreativeCompliancePage';
+import { CreativeCommandCenterPage } from './pages/CreativeCommandCenterPage';
+import { CreativeReviewPage } from './pages/CreativeReviewPage';
+import { CreativeRulesPage } from './pages/CreativeRulesPage';
 import { PublicLeadRadarPage } from './pages/PublicLeadRadarPage';
 import { LeadReviewWorkbenchPage } from './pages/LeadReviewWorkbenchPage';
 import { LeadImportRulesPage } from './pages/LeadImportRulesPage';
@@ -37,7 +39,9 @@ function CockpitPages() {
     <IntegrationPage />
     <OrderServiceWorkbenchPage />
     <OrderServiceRulesPage />
-    <CreativeCompliancePage />
+    <CreativeCommandCenterPage />
+    <CreativeReviewPage />
+    <CreativeRulesPage />
     <PublicLeadRadarPage />
     <LeadReviewWorkbenchPage />
     <LeadImportRulesPage />

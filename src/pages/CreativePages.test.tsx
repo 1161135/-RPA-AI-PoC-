@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { AppShell } from '../components/AppShell';
 import { CockpitProvider } from '../hooks/useCockpitData';
 import { CreativeReviewPage } from './CreativeReviewPage';
+import { CreativeRulesPage } from './CreativeRulesPage';
 
 describe('creative compliance pages', () => {
   afterEach(cleanup);
@@ -13,5 +14,11 @@ describe('creative compliance pages', () => {
     expect(screen.getByDisplayValue(/建议结合个人情况/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: '管理层' }));
     expect(screen.queryByRole('button', { name: '提交审核' })).not.toBeInTheDocument();
+  });
+  it('shows strictest-rule precedence and full degradation boundary', () => {
+    render(<CreativeRulesPage />);
+    expect(screen.getByRole('heading', { name: '素材合规规则中心' })).toBeInTheDocument();
+    expect(screen.getByText(/通用医学\/广告规则是底线/)).toBeInTheDocument();
+    expect(screen.getByText(/完全降级/)).toBeInTheDocument();
   });
 });
